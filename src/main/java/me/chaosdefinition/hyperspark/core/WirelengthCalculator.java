@@ -1,6 +1,7 @@
 package me.chaosdefinition.hyperspark.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import me.chaosdefinition.hyperspark.common.HypersparkException;
@@ -89,10 +90,7 @@ public class WirelengthCalculator {
 			this.initial = new ArrayList<>(initial);
 		} else {
 			/* [0, 1, 2] will produce all permutations without symmetry */
-			this.initial = new ArrayList<>(this.vertices);
-			this.initial.add(0);
-			this.initial.add(1);
-			this.initial.add(2);
+			this.initial = new ArrayList<>(Arrays.asList(0, 1, 2));
 		}
 
 		this.minWirelength = knownMinimumWirelength(dimension);

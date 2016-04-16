@@ -1,7 +1,10 @@
 package me.chaosdefinition.hyperspark.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import me.chaosdefinition.hyperspark.common.HypersparkException;
 
 /**
  * Relevant mathematical utilities.
@@ -17,40 +20,40 @@ public class MathUtils {
 	 *            an integer
 	 * @return its factorial
 	 */
-	public static long factorial(int n) {
-		/* pre-calculated values to speed up calculation */
-		final int[] factorials = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 };
+	public static int factorial(int n) {
+		final int[] factorials = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600 };
 
-		if (n < factorials.length) {
-			return factorials[n];
-		} else {
-			long product = factorials[factorials.length - 1];
-			for (; n >= factorials.length; --n) {
-				product *= n;
-			}
-			return product;
+		if (n >= factorials.length) {
+			throw new HypersparkException("Factorial of " + n + "too large!");
 		}
+
+		return factorials[n];
 	}
 
 	/**
-	 * Converts an integer to a permutation of given length in lexicographic
-	 * order.
+	 * Converts an integer to a permutation of given length without rotation and
+	 * flip symmetries.
 	 * 
 	 * @param index
-	 *            an integer ranging from 0 to (n! - 1)
+	 *            an integer ranging from 0 to ((n - 1)! / 2 - 1)
 	 * @param length
 	 *            the length of the target permutation
 	 * @return the target permutation
 	 */
 	public static List<Integer> indexToPermutation(int index, int length) {
-		List<Integer> permutation = new ArrayList<>(length);
-		List<Integer> lexicode = lexicode(length);
-		for (int i = length - 1; i >= 0; --i) {
-			long factorial = factorial(i);
-			permutation.add(lexicode.remove((int) (index / factorial)));
-			index %= factorial;
+		List<Integer> code = new ArrayList<>(Arrays.asList(0, 1, 2));
+		int[] position = new int[length];
+
+		for (int i = length - 1; i >= 3; --i) {
+			/* 0 is always fixed, so we need to shift others each by 1 */
+			position[i] = index % i + 1;
+			index /= i;
 		}
-		return permutation;
+		for (int i = 3; i < length; ++i) {
+			code.add(position[i], i);
+		}
+
+		return code;
 	}
 
 	/**

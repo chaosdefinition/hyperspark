@@ -25,7 +25,7 @@ public class App {
 
 			/* Get options. */
 			int dimension = parser.getDimension();
-			int length = parser.getLength();
+			int length = parser.getLength() < 3 ? 3 : parser.getLength();
 			String outdir = parser.getOutdir();
 			boolean verbose = parser.isVerbose();
 
@@ -35,10 +35,11 @@ public class App {
 
 			/*
 			 * Generate a list of lexicographic ordered integers, each
-			 * representing an index in all permutations of specified length,
-			 * and parallelize them to JavaRDD.
+			 * representing an index in all permutations of specified length
+			 * without rotation and flip symmetries, and then parallelize them
+			 * to JavaRDD.
 			 */
-			JavaRDD<Integer> indices = ctx.parallelize(MathUtils.lexicode(length));
+			JavaRDD<Integer> indices = ctx.parallelize(MathUtils.lexicode(MathUtils.factorial(length - 1) / 2));
 
 			if (verbose) {
 				/*
