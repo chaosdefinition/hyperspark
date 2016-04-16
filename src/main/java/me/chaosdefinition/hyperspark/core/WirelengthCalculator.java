@@ -35,7 +35,7 @@ public class WirelengthCalculator {
 		 * An egde exists if only one bit differs, so we do this check by
 		 * determing if their xor sum is a power of two.
 		 */
-		return ((v1 ^ v2) & ((v1 ^ v2) - 1)) == 0;
+		return (v1 ^ v2) != 0 && ((v1 ^ v2) & ((v1 ^ v2) - 1)) == 0;
 	}
 
 	/**
@@ -48,7 +48,13 @@ public class WirelengthCalculator {
 	 * @return the known minimum circular wirelength
 	 */
 	public static int knownMinimumWirelength(int dimension) {
-		return 3 * (1 << ((dimension << 1) - 3)) - (1 << (dimension - 1));
+		if (dimension < 0) {
+			throw new HypersparkException("Illegal value of dimension: " + dimension);
+		} else if (dimension < 2) {
+			return dimension;
+		} else {
+			return 3 * (1 << ((dimension << 1) - 3)) - (1 << (dimension - 1));
+		}
 	}
 
 	/**
@@ -115,7 +121,13 @@ public class WirelengthCalculator {
 	 */
 	public List<List<Integer>> findMinimumMappings() {
 		this.minMappings = new ArrayList<>();
-		backtrack(this.initial, this.initial.size());
+		if (!this.verbose) {
+			setVerbose(true);
+			backtrack(this.initial, this.initial.size());
+			setVerbose(false);
+		} else {
+			backtrack(this.initial, this.initial.size());
+		}
 		return this.minMappings;
 	}
 
