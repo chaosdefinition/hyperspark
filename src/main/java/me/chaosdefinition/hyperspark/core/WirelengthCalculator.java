@@ -7,8 +7,9 @@ import java.util.List;
 import me.chaosdefinition.hyperspark.common.HypersparkException;
 
 /**
- * @author Chaos Shen
+ * The main class of hyperspark.
  *
+ * @author Chaos Shen
  */
 public class WirelengthCalculator {
 
